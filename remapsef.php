@@ -25,41 +25,37 @@ class plgSystemRemapSEF extends JPlugin
         // Registration: allow for tidy registration completion url:
         '#^registration/complete/?$#'
             => 'index.php?option=com_users&view=registration&layout=complete',
-        // Registration: allow for tidy registration activation url:
+        // Registration: allow for tidy registration email activation url:
         '#^registration/activate/([a-z0-9]{32})/?$#'
             => 'index.php?option=com_users&task=registration.activate&token=$1',
+            
         // Password reset: allow for tidy request url:
-        '#^user-password-reset/request?$#'
-            => 'index.php?ooption=com_users&task=reset.request',
+        '#^login/user-password-reset/request?$#'
+            => 'index.php?option=com_users&task=reset.request',
         // Password reset: allow for tidy confirmation url:
-        '#^user-password-reset/confirm/?$#'
+        '#^login/user-password-reset/confirm/?$#'
             => 'index.php?option=com_users&view=reset&layout=confirm',
+        // Password reset: allow for tidy confirmation code url:
+        '#^login/user-password-reset/confirm/([a-z0-9]+)$#'
+            => 'index.php?option=com_users&view=reset&layout=confirm&token=$1',     
         // Password reset: allow for tidy verification url:
-        '#^user-password-reset/verify/?$#'
+        '#^login/user-password-reset/verify/?$#'
             => 'index.php?option=com_users&task=reset.confirm',
         // Password reset: allow for tidy completion url:
-        '#^user-password-reset/complete/?$#'
+        '#^login/user-password-reset/complete/?$#'
             => 'index.php?option=com_users&view=reset&layout=complete',
         // Password reset: allow for tidy new password url:
-        '#^user-password-reset/newpass/?$#'
-            => 'index.php?option=com_users&task=reset.complete',
-        '#^logout\?(.*)$#'
-            => 'index.php?option=com_users&task=user.logout&$1',
-        '#^component/users\?Itemid=.*#'
-            => '/login/',
-        '#user-profile-edit/?$#'
-            => 'user-profile-edit/__USER_ID__'
+        '#^login/user-password-reset/newpass/?$#'
+            => 'index.php?option=com_users&task=reset.complete'
     );
 
     protected $build_map = array(
-        // User profile: used in user profile page edit button
-        '#^index\.php\?option=com_users&task=profile\.edit.*user_id=([\d]+).*$#'
-            => 'user-profile-edit/$1',
+        // Prevent occurrences of redundant /user-profile/profile: (2019-01-31)
+        '#^index\.php\?option=com_users&view=profile.*$#'
+            => 'user-profile',
+            
         // Registration: used when there is a form error, to redirect back to tidy url:
-        '#^index\.php\?option=com_users&view=registration&Itemid=134&code=([a-z0-9]{40})$#'
-            => 'registration/{code}',
-        // Registration: used to build tidy form action:
-        '#^index\.php\?option=com_users&task=registration\.register&Itemid=\d+&code=([a-z0-9]{40})$#'
+        '#^index\.php\?option=com_users&view=registration&code=([a-z0-9]{40})&Itemid=\d+$#'
             => 'registration/{code}',
         // Registration: used to tidy completion url:
         '#^index\.php\?option=com_users&view=registration&layout=complete&Itemid=\d+$#'
@@ -70,36 +66,28 @@ class plgSystemRemapSEF extends JPlugin
         // Registration: tidy registration activation email link url:
         '#^index\.php\?option=com_users&task=registration\.activate&token=([a-z0-9]{32})&Itemid=\d+$#'
             => 'registration/activate/$1',
+            
         // Password reset: tidy request form action:
         '#^index\.php\?option=com_users&task=reset\.request(&Itemid=\d+)?$#'
-            => 'user-password-reset/request',
-        // Password reset: tidy confirmation email link url:
+            => 'login/user-password-reset/request',
+        // Password reset: tidy confirmation url:
         '#^index\.php\?option=com_users&view=reset&layout=confirm(&Itemid=\d+)?$#'
-            => 'user-password-reset/confirm',
+            => 'login/user-password-reset/confirm',
+        // Password reset: tidy confirmation email link url:
+        '#^index\.php\?option=com_users&view=reset&layout=confirm&token=(.*?)(&Itemid=\d+)?$#'
+            => 'login/user-password-reset/confirm/$1',
         // Password reset: tidy confirmation form action:
         '#^index\.php\?option=com_users&task=reset\.confirm(&Itemid=\d+)?$#'
-            => 'user-password-reset/verify',
+            => 'login/user-password-reset/verify',
         // Password reset: tidy completion form redirect:
         '#^index\.php\?option=com_users&view=reset&layout=complete(&Itemid=\d+)?$#'
-            => 'user-password-reset/complete',
+            => 'login/user-password-reset/complete',
         // Password reset: tidy new password form action:
         '#^index\.php\?option=com_users&task=reset\.complete(&Itemid=\d+)?$#'
-            => 'user-password-reset/newpass',
+            => 'login/user-password-reset/newpass'
     );
 
-    protected $breadcrumb_map = array(
-        // Back to user profile from password reset page:
-        '#^user-profile-edit/([\d]+)/?$#'
-            => array('link'=>'user-profile', 'name'=>'User Profile'),
-        // Back to login page from profile edit page:
-        '#^user-password-reset/?$#'
-            => array('link'=>'login', 'name'=>'Login'),
-        // Back to login page from username reminder page:
-        '#^user-username-reminder/?$#'
-            => array('link'=>'login', 'name'=>'Login'),
-        // Back to login page from password reset confirmation/completion page:
-        '#^user-password-reset/(confirm|complete)/?$#'
-            => array('link'=>'login', 'name'=>'Login'),
+    protected $breadcrumb_map = array(        
     );
 
     /**
@@ -245,9 +233,9 @@ class plgSystemRemapSEF extends JPlugin
     
     /**
      * Add parse rule to router.
-	 *
-	 * @param   JRouter  &$router  JRouter object.
-	 * @param   JUri     &$uri     JUri object.
+     *
+     * @param   JRouter  &$router  JRouter object.
+     * @param   JUri     &$uri     JUri object.
      *
      * @return   void
      */
@@ -272,9 +260,9 @@ class plgSystemRemapSEF extends JPlugin
 
     /**
      * Add build preprocess rule to router.
-	 *
-	 * @param   JRouter  &$router  JRouter object.
-	 * @param   JUri     &$uri     JUri object.
+     *
+     * @param   JRouter  &$router  JRouter object.
+     * @param   JUri     &$uri     JUri object.
      *
      * @return   void
      */
@@ -286,7 +274,6 @@ class plgSystemRemapSEF extends JPlugin
                 // Update any placeholders for URI vars:
                 if (preg_match_all('/{([a-z0-9-_]+)}/', $route, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $match) {
-                        #$var   = JRequest::getCmd($match[1]);
                         $var   = $uri->getvar($match[1]);
                         $route = str_replace($match[0], $var, $route);
                     }
