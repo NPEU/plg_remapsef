@@ -46,7 +46,11 @@ class plgSystemRemapSEF extends JPlugin
             => 'index.php?option=com_users&view=reset&layout=complete',
         // Password reset: allow for tidy new password url:
         '#^login/user-password-reset/newpass/?$#'
-            => 'index.php?option=com_users&task=reset.complete'
+            => 'index.php?option=com_users&task=reset.complete',
+            
+        // Username reminder: allow for tidy new password url:
+        '#^login/user-username-reminder/send?$#'
+            => 'index.php?option=com_users&task=remind.remind'
     );
 
     protected $build_map = array(
@@ -84,7 +88,11 @@ class plgSystemRemapSEF extends JPlugin
             => 'login/user-password-reset/complete',
         // Password reset: tidy new password form action:
         '#^index\.php\?option=com_users&task=reset\.complete(&Itemid=\d+)?$#'
-            => 'login/user-password-reset/newpass'
+            => 'login/user-password-reset/newpass',
+            
+        // Username reminder: tidy reminder form action:
+        '#^index\.php\?option=com_users&task=remind.remind(&Itemid=\d+)?$#'
+            => 'login/user-username-reminder/send',
     );
 
     protected $breadcrumb_map = array(        
