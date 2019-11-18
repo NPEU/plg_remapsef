@@ -34,4 +34,21 @@
             <tag>stable</tag>
         </tags>
     </update>
+    <update>
+        <name>NPEU: plg_remapsef</name>
+        <description>Joomla! plg_remapsef plugin</description>
+        <element>remapsef</element>
+        <type>plugin</type>
+        <folder>system</folder>
+        <version>1.0.2</version>
+        <client>site</client>
+        <infourl title="NPEU: plg_remapsef">https://github.com/NPEU/plg_remapsef/releases/tag/v1.0.2</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://github.com/NPEU/plg_remapsef/archive/v1.0.2.zip</downloadurl>
+        </downloads>
+        <targetplatform name="joomla" />
+        <tags>
+            <tag>stable</tag>
+        </tags>
+    </update>
 </updates>
