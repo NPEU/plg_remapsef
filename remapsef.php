@@ -171,7 +171,10 @@ class plgSystemRemapSEF extends JPlugin
                 JError::raiseError(404, JText::_("Page Not Found"));
             }
         }
-        
+        /*
+        I can't recall exactly why this is here but it breaks Category List menu item types so commenting out for now.
+        Note it;s probably to do with preventing menu items being loaded via query string params but I need an example
+        to test this.
         if (
             $jinput->get('option', false, 'STRING') == 'com_content'
          && $jinput->get('view', false, 'STRING') == 'category'
@@ -179,6 +182,7 @@ class plgSystemRemapSEF extends JPlugin
         ) {
             JError::raiseError(404, JText::_("Page Not Found"));
         }
+        */
     }
     
     /**
@@ -228,7 +232,7 @@ class plgSystemRemapSEF extends JPlugin
                     // Get all the paths:
                     $paths = $pathway->getPathway();
                     // Put the last one at the start:
-                    // (note: should improve this to allow for specfic positioning)
+                    // (note: should improve this to allow for specific positioning)
                     $last = array_pop($paths);
                     array_unshift($paths, $last);
                 }
