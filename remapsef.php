@@ -15,9 +15,9 @@ defined('_JEXEC') or die;
 class plgSystemRemapSEF extends JPlugin
 {
     protected $autoloadLanguage = true;
-    
+
     protected $sef_enabled = true;
-    
+
     protected $parse_map = array(
         // Registration: allow for tidy registration url:
         '#^registration/([a-z0-9]{40})/?$#'
@@ -28,7 +28,7 @@ class plgSystemRemapSEF extends JPlugin
         // Registration: allow for tidy registration email activation url:
         '#^registration/activate/([a-z0-9]{32})/?$#'
             => 'index.php?option=com_users&task=registration.activate&token=$1',
-            
+
         // Password reset: allow for tidy request url:
         '#^login/user-password-reset/request?$#'
             => 'index.php?option=com_users&task=reset.request',
@@ -37,7 +37,7 @@ class plgSystemRemapSEF extends JPlugin
             => 'index.php?option=com_users&view=reset&layout=confirm',
         // Password reset: allow for tidy confirmation code url:
         '#^login/user-password-reset/confirm/([a-z0-9]+)$#'
-            => 'index.php?option=com_users&view=reset&layout=confirm&token=$1',     
+            => 'index.php?option=com_users&view=reset&layout=confirm&token=$1',
         // Password reset: allow for tidy verification url:
         '#^login/user-password-reset/verify/?$#'
             => 'index.php?option=com_users&task=reset.confirm',
@@ -47,7 +47,7 @@ class plgSystemRemapSEF extends JPlugin
         // Password reset: allow for tidy new password url:
         '#^login/user-password-reset/newpass/?$#'
             => 'index.php?option=com_users&task=reset.complete',
-            
+
         // Username reminder: allow for tidy new password url:
         '#^login/user-username-reminder/send?$#'
             => 'index.php?option=com_users&task=remind.remind'
@@ -57,7 +57,7 @@ class plgSystemRemapSEF extends JPlugin
         // Prevent occurrences of redundant /user-profile/profile: (2019-01-31)
         '#^index\.php\?option=com_users&view=profile.*$#'
             => 'user-profile',
-            
+
         // Registration: used when there is a form error, to redirect back to tidy url:
         '#^index\.php\?option=com_users&view=registration&code=([a-z0-9]{40})&Itemid=\d+$#'
             => 'registration/{code}',
@@ -70,7 +70,7 @@ class plgSystemRemapSEF extends JPlugin
         // Registration: tidy registration activation email link url:
         '#^index\.php\?option=com_users&task=registration\.activate&token=([a-z0-9]{32})&Itemid=\d+$#'
             => 'registration/activate/$1',
-            
+
         // Password reset: tidy request form action:
         '#^index\.php\?option=com_users&task=reset\.request(&Itemid=\d+)?$#'
             => 'login/user-password-reset/request',
@@ -89,13 +89,13 @@ class plgSystemRemapSEF extends JPlugin
         // Password reset: tidy new password form action:
         '#^index\.php\?option=com_users&task=reset\.complete(&Itemid=\d+)?$#'
             => 'login/user-password-reset/newpass',
-            
+
         // Username reminder: tidy reminder form action:
         '#^index\.php\?option=com_users&task=remind.remind(&Itemid=\d+)?$#'
             => 'login/user-username-reminder/send',
     );
 
-    protected $breadcrumb_map = array(        
+    protected $breadcrumb_map = array(
     );
 
     /**
@@ -115,7 +115,7 @@ class plgSystemRemapSEF extends JPlugin
 
         parent::__construct($subject, $config);
     }
-    
+
     /**
      * After Route Event.
      *
@@ -134,8 +134,8 @@ class plgSystemRemapSEF extends JPlugin
         $id     = $jinput->get('id', false, 'INT');
         $juri   = JFactory::getURI();
         $path   = trim($juri->getPath(),'/');
-        
-        // If we're in com_content and it's an article, all URL's need to be explicit (except for 
+
+        // If we're in com_content and it's an article, all URL's need to be explicit (except for
         // the query string) so we need to check if the menu item exists 'as is':
         if (
             $jinput->get('option', false, 'STRING') == 'com_content'
@@ -145,28 +145,28 @@ class plgSystemRemapSEF extends JPlugin
             $sql = "SELECT * FROM #__menu WHERE path = '$path'";
             $dbo->setQuery($sql);
             $menu_item = $dbo->loadObject();
-            
+
             // If there's an exact path match, we're all good:
             if ($menu_item) {
                 return;
             }
-            
+
             // If there's no matching path, it may be in a blog in which case we need to check that
             // the article loaded is in the correct category:
             $menu = $app->getMenu()->getActive();
 
             if (isset($menu->query['layout']) && $menu->query['layout'] == 'blog') {
                 $cat_id = $menu->query['id'];
-                
+
                 $sql = "SELECT * FROM #__content WHERE id = $id";
                 $dbo->setQuery($sql);
                 $article = $dbo->loadObject();
-                
+
                 // If the categories don't match, it's 404:
-                if ($article->catid != $cat_id) {
+                if (isset($article->catid) && $article->catid != $cat_id) {
                     JError::raiseError(404, JText::_("Page Not Found"));
                 }
-                
+
             } else {
                 JError::raiseError(404, JText::_("Page Not Found"));
             }
@@ -184,7 +184,7 @@ class plgSystemRemapSEF extends JPlugin
         }
         */
     }
-    
+
     /**
      * After Initialise Event.
      *
@@ -207,7 +207,7 @@ class plgSystemRemapSEF extends JPlugin
 
         return;
     }
-    
+
     /**
      * Before Render event
      *
@@ -242,7 +242,7 @@ class plgSystemRemapSEF extends JPlugin
         }
         return;
     }
-    
+
     /**
      * Add parse rule to router.
      *
@@ -256,9 +256,9 @@ class plgSystemRemapSEF extends JPlugin
         $juri = JUri::getInstance();
         $root = $juri->root();
         $path = str_replace($root, '', (string) $juri);
-        
+
         $user = JFactory::getUser();
-        
+
         foreach ($this->parse_map as $regex => $route) {
             $route = str_replace('__USER_ID__', $user->id, $route);
             if (preg_match($regex, $path)) {
