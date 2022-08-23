@@ -10,7 +10,7 @@
     <license>MIT License; see LICENSE.md</license>
 
     <!--  The version string is recorded in the components table -->
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <!-- The description is optional and defaults to the name -->
     <description>PLG_SYSTEM_REMAPSEF_XML_DESCRIPTION</description>
 
@@ -18,7 +18,7 @@
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
         <server type="extension" name="NPEU: plg_remapsef Update Site">https://raw.githubusercontent.com/NPEU/plg_remapsef/master/update-manifest.xml</server>
     </updateservers>
-    
+
     <files>
         <filename plugin="remapsef">remapsef.php</filename>
         <filename>index.html</filename>
