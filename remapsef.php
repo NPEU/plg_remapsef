@@ -127,7 +127,7 @@ class plgSystemRemapSEF extends JPlugin
             return;
         }
         $app = JFactory::getApplication();
-        if ($app->isAdmin()) {
+        if ($app->isClient('administrator')) {
             return; // Don't run in admin
         }
         $jinput = JFactory::getApplication()->input;
@@ -196,10 +196,11 @@ class plgSystemRemapSEF extends JPlugin
             return;
         }
         $app = JFactory::getApplication();
-        if ($app->isAdmin()) {
+        if ($app->isClient('administrator')) {
             // Sometimes some admin processes will need to create a site route,
             // so we need to add these routes to the site router:
-            $app = JApplication::getInstance('site');
+            //$app = JApplication::getInstance('site');
+            $app = Factory::getContainer()->get(\Joomla\CMS\Application\SiteApplication::class);
         }
         $router   = $app->getRouter();
         $router->attachBuildRule(array($this, 'buildRules'));
