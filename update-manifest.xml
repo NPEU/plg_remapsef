@@ -6,7 +6,7 @@
         <element>remapsef</element>
         <type>plugin</type>
         <folder>system</folder>
-        <version>1.0.3</version>
+        <version>4.0.0</version>
         <client>site</client>
         <infourl title="NPEU: plg_remapsef">https://github.com/NPEU/plg_remapsef/releases/tag/v1.0.3</infourl>
         <downloads>
